@@ -15,6 +15,10 @@ public class ValidDnaSequenceValidator implements ConstraintValidator<ValidDnaSe
         if(dna == null || dna.length == 0){
             return false;
         }
+
+        if (dna.length < 4) {
+            return false;
+        }
         final int N = dna.length;
         //recorremos cada fila
         char[][] grid = new char[N][N]; // optimización

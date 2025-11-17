@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidDnaSequence {
     //mensaje de error por defecto
-    String message() default "La secuencia de ADN es inválida (no es cuadrada o contiene" +
-            " incorrectos)";
+    String message() default "La secuencia de ADN es inválida (no es cuadrada, tiene un tamaño menor al mínimo o contiene" +
+            " valores incorrectos)";
     // 2. El "boilerplate" estándar (requerido)
     Class<?>[] groups() default {};
 
