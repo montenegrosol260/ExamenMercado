@@ -7,6 +7,7 @@ import lombok.*;
 @Getter @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table ( name = "DNAs_record")
 public class DnaRecord {
