@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MutantDetector {
-    //definimos una constante que podría variar con el tiempo
+
     private static final int SEQUENCE_LENGHT = 4;
 
     public boolean isMutant(String[] dna) {
@@ -18,82 +18,91 @@ public class MutantDetector {
 
         int contadorSecuencia = 0;
 
-        // Recorremos TODA la matriz (sin restar 4 aquí)
+        // Recorremos TODA la matriz
         for (int f = 0; f < N; f++) {
             for (int c = 0; c < N; c++) {
 
                 char actual = grid[f][c];
 
-                //  HORIZONTAL
-                // Solo buscamos si tenemos espacio a la derecha (c <= N-4)
+                // HORIZONTAL
+                // Miramos atrás: IZQUIERDA (c-1)
                 if (c <= N - SEQUENCE_LENGHT) {
-                    if (checkHorizontal(grid, f, c)) {
-                        contadorSecuencia++;
-                        if (contadorSecuencia > 1) return true;
+                    if (c == 0 || grid[f][c - 1] != actual) {
+                        if (checkHorizontal(grid, f, c)) {
+                            contadorSecuencia++;
+                            if (contadorSecuencia > 1) return true;
+                        }
                     }
                 }
 
                 // VERTICAL
-                // Solo buscamos si tenemos espacio abajo
+                // Miramos atrás: ARRIBA (f-1)
                 if (f <= N - SEQUENCE_LENGHT) {
-                    if (checkVertical(grid, f, c)) {
-                        contadorSecuencia++;
-                        if (contadorSecuencia > 1) return true;
+                    // CORREGIDO: Antes tenías 'c==0' y 'c-1' aquí por error
+                    if (f == 0 || grid[f - 1][c] != actual) {
+                        if (checkVertical(grid, f, c)) {
+                            contadorSecuencia++;
+                            if (contadorSecuencia > 1) return true;
+                        }
                     }
                 }
 
-                // DIAGONAL DESCENDENTE
-                // Espacio a la derecha Y abajo
+                // DIAGONAL DESCENDENTE \
+                // Miramos atrás: ARRIBA-IZQUIERDA (f-1, c-1)
                 if (f <= N - SEQUENCE_LENGHT && c <= N - SEQUENCE_LENGHT) {
-                    if (checkDiagonalDescending(grid, f, c)) {
-                        contadorSecuencia++;
-                        if (contadorSecuencia > 1) return true;
+                    if (f == 0 || c == 0 || grid[f - 1][c - 1] != actual) {
+                        if (checkDiagonalDescending(grid, f, c)) {
+                            contadorSecuencia++;
+                            if (contadorSecuencia > 1) return true;
+                        }
                     }
                 }
 
-                // DIAGONAL ASCENDENTE
-                // Espacio a la derecha Y ARRIBA (f >= 3)
+                // DIAGONAL ASCENDENTE /
+                // Miramos atrás: ABAJO-IZQUIERDA (f+1, c-1)
                 if (f >= SEQUENCE_LENGHT - 1 && c <= N - SEQUENCE_LENGHT) {
-                    if (checkDiagonalAscending(grid, f, c)) {
-                        contadorSecuencia++;
-                        if (contadorSecuencia > 1) return true;
+                    if (f == N - 1 || c == 0 || grid[f + 1][c - 1] != actual) {
+                        if (checkDiagonalAscending(grid, f, c)) {
+                            contadorSecuencia++;
+                            if (contadorSecuencia > 1) return true;
+                        }
                     }
                 }
             }
         }
         return false;
     }
-    //Desacoplamos la lógica de las 4 maneras de obtener el
+
+    // METODOS HELPER
     private boolean checkHorizontal(char[][] grid, int f, int c){
         char start = grid[f][c];
         for(int i = 1; i < SEQUENCE_LENGHT; i++){
             if(grid[f][c + i] != start) return false;
         }
-
         return true;
     }
+
     private boolean checkVertical(char[][] grid, int f, int c){
         char start = grid[f][c];
         for(int i = 1; i < SEQUENCE_LENGHT; i++){
             if(grid[f + i][c] != start) return false;
         }
-
         return true;
     }
+
     private boolean checkDiagonalAscending(char[][] grid, int f, int c){
         char start = grid[f][c];
         for(int i = 1; i < SEQUENCE_LENGHT; i++){
             if(grid[f - i][c + i] != start) return false;
         }
-
         return true;
     }
+
     private boolean checkDiagonalDescending(char[][] grid, int f, int c){
         char start = grid[f][c];
         for(int i = 1; i < SEQUENCE_LENGHT; i++){
             if(grid[f + i][c + i] != start) return false;
         }
-
         return true;
     }
 }

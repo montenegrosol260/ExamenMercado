@@ -5,6 +5,9 @@ import org.example.entity.DnaRecord;
 import org.example.repository.DnaRecordRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
@@ -22,10 +25,9 @@ public class MutantService {
 
         // Generar la "Huella Digital" (Hash) del ADN
         // Convertimos el array en un solo texto para usarlo como ID único.
-        String dnaHash = String.join("", dna);
+        String dnaHash = calculateHash(dna);
 
         // Preguntar a la Memoria (Base de Datos)
-        // ¿Ya analizamos este ADN antes?
         Optional<DnaRecord> existingRecord = dnaRecordRepository.findByDnaHash(dnaHash);
 
         if (existingRecord.isPresent()) {
@@ -33,8 +35,7 @@ public class MutantService {
             return existingRecord.get().isMutant();
         }
 
-        // Preguntar al Experto (Si no estaba en memoria)
-        // Como es nuevo, llamamos al algoritmo detector.
+        // Preguntar al Experto si no estaba en memoria
         boolean isMutant = mutantDetector.isMutant(dna);
 
         // Guardar en Memoria
@@ -48,5 +49,29 @@ public class MutantService {
 
         // Devolver el resultado final
         return isMutant;
+    }
+    private String calculateHash(String[] dna) {
+        try {
+            // Unimos el array en un solo String ("ATCG...")
+            String dnaString = String.join("", dna);
+
+            // Usamos el algoritmo SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(dnaString.getBytes());
+
+            // Convertimos los bytes a texto Hexadecimal legible
+            BigInteger number = new BigInteger(1, hashBytes);
+            StringBuilder hexString = new StringBuilder(number.toString(16));
+
+            // Rellenamos con ceros a la izquierda si faltan (para que sean 64 caracteres)
+            while (hexString.length() < 64) {
+                hexString.insert(0, '0');
+            }
+
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error interno al calcular hash", e);
+        }
     }
 }

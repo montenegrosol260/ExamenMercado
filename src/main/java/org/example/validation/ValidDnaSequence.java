@@ -16,10 +16,9 @@ public @interface ValidDnaSequence {
     //mensaje de error por defecto
     String message() default "La secuencia de ADN es inválida (no es cuadrada, tiene un tamaño menor al mínimo o contiene" +
             " valores incorrectos)";
-    // 2. El "boilerplate" estándar (requerido)
+    // permite agrupar validaciones
     Class<?>[] groups() default {};
-
-    // 3. El "boilerplate" estándar (requerido)
+    // permite adjuntar datos extra
     Class<? extends Payload>[] payload() default {};
-
+    // estos dos últimos son obligatorios por el estándar de Java (Bean validation API)
 }
