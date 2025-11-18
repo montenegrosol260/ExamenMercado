@@ -80,7 +80,7 @@ public class MutantServiceTest {
         verify(dnaRecordRepository, times(1)).save(any(DnaRecord.class));
     }
 
-    // --- TEST 4: VERIFICAR CÁLCULO DE HASH (Integridad) ---
+    // TEST 4: VERIFICAR CÁLCULO DE HASH (Integridad)
     @Test
     void testAnalyzeDnaCalculatesCorrectHash() {
         // GIVEN
@@ -97,7 +97,7 @@ public class MutantServiceTest {
         verify(dnaRecordRepository).findByDnaHash(eq(expectedHash));
     }
 
-    // --- TEST 5: VERIFICAR DATOS AL GUARDAR (Integridad) ---
+    // TEST 5: VERIFICAR DATOS AL GUARDAR (Integridad)
     @Test
     void testAnalyzeDnaSavesCorrectData() {
         // GIVEN

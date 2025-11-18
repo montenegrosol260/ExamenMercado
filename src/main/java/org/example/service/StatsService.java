@@ -19,6 +19,10 @@ public class StatsService {
         if(countHuman > 0){
             ratio = (double) countMutant / countHuman;
         }
+        // Si no hay humanos, retorna el número de mutantes
+        if (countHuman == 0) {
+            return new StatsResponse(countMutant, countHuman, countMutant);
+        }
 
         return new StatsResponse(countMutant, countHuman, ratio);
     }
