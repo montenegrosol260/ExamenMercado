@@ -34,3 +34,8 @@ Este diagrama representa el flujo de la operación principal de detección:
 
 ![Diagrama de Secuencia](docs/flujo_secuencia.png)
 
+## 🚀 Demo en Vivo (Deploy)
+
+La API está desplegada y lista para usar en Render:
+👉 **URL Base:** `https://examenmercado-tcn5.onrender.com`
+👉 **Documentación Swagger:** [Ver Swagger UI](https://examenmercado-tcn5.onrender.com/swagger-ui.html)
