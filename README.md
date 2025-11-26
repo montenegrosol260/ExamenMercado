@@ -32,7 +32,5 @@ Tener instalado Java 17 o superior.
 
 Este diagrama representa el flujo de la operación principal de detección:
 
+![Diagrama de Secuencia](docs/flujo_secuencia.png)
 
-
-
-<img width="1716" height="2306" alt="flujo_secuencia" src="https://github.com/user-attachments/assets/c1af6b93-24f7-4dd8-b525-572703ce9bb9" />
