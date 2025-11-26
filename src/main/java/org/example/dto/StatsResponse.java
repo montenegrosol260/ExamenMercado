@@ -1,12 +1,17 @@
 package org.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class StatsResponse {
-    private long count_Mutant_Dna;
-    private long count_Human_Dna;
+    @JsonProperty("count_mutant_dna") // Nombre para el JSON
+    private long countMutantDna;      // Nombre para Java
+
+    @JsonProperty("count_human_dna")
+    private long countHumanDna;
+
     private double ratio;
 }

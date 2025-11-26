@@ -1,5 +1,6 @@
 package org.example.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.entity.DnaRecord;
 import org.example.repository.DnaRecordRepository;
@@ -73,5 +74,15 @@ public class MutantService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error interno al calcular hash", e);
         }
+    }
+    @Transactional
+    public boolean deleteDna(String hash){
+        Optional<DnaRecord> record = dnaRecordRepository.findByDnaHash(hash);
+
+        if (record.isPresent()) {
+            dnaRecordRepository.deleteByDnaHash(hash);
+            return true; // Borrado con éxito
+        }
+        return false; // No existía
     }
 }

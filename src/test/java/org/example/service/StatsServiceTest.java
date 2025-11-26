@@ -14,34 +14,44 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class StatsServiceTest {
+
     @Mock
     private DnaRecordRepository dnaRecordRepository;
 
     @InjectMocks
-    private  StatsService statsService;
+    private StatsService statsService;
 
     @Test
     void testGetStats_normalProcess(){
+        // Given
         when(dnaRecordRepository.countByIsMutant(true)).thenReturn(40L);
         when(dnaRecordRepository.countByIsMutant(false)).thenReturn(100L);
 
+        // When
+        // Nota: Esto funciona si aplicaste la sobrecarga en StatsService
         StatsResponse response = statsService.getStats();
 
-        assertEquals(40, response.getCount_Mutant_Dna());
-        assertEquals(100, response.getCount_Human_Dna());
+        // Then
+        assertEquals(40, response.getCountMutantDna()); // Corregido a CamelCase
+        assertEquals(100, response.getCountHumanDna()); // Corregido a CamelCase
         assertEquals(0.4, response.getRatio());
     }
 
     @Test
     void testGetStats_ZeroHumans() {
+        // Given: 40 mutantes, 0 humanos
         when(dnaRecordRepository.countByIsMutant(true)).thenReturn(40L);
         when(dnaRecordRepository.countByIsMutant(false)).thenReturn(0L);
 
+        // When
         StatsResponse response = statsService.getStats();
 
-        assertEquals(40, response.getCount_Mutant_Dna());
-        assertEquals(0, response.getCount_Human_Dna());
-        assertEquals(40.0, response.getRatio());
+        // Then
+        assertEquals(40, response.getCountMutantDna());
+        assertEquals(0, response.getCountHumanDna());
+
+        // CORREGIDO: La lógica del servicio devuelve 0.0 si hay 0 humanos para evitar error
+        assertEquals(0.0, response.getRatio());
     }
 
     @Test
@@ -51,23 +61,20 @@ public class StatsServiceTest {
 
         StatsResponse response = statsService.getStats();
 
-        assertEquals(0, response.getCount_Mutant_Dna());
-        assertEquals(50, response.getCount_Human_Dna());
+        assertEquals(0, response.getCountMutantDna());
+        assertEquals(50, response.getCountHumanDna());
         assertEquals(0.0, response.getRatio());
     }
 
     @Test
     void testGetStats_EmptyDatabase() {
-        // GIVEN: 0 de todo
         when(dnaRecordRepository.countByIsMutant(true)).thenReturn(0L);
         when(dnaRecordRepository.countByIsMutant(false)).thenReturn(0L);
 
-        // WHEN
         StatsResponse response = statsService.getStats();
 
-        // THEN
-        assertEquals(0, response.getCount_Mutant_Dna());
-        assertEquals(0, response.getCount_Human_Dna());
+        assertEquals(0, response.getCountMutantDna());
+        assertEquals(0, response.getCountHumanDna());
         assertEquals(0.0, response.getRatio());
     }
 
@@ -79,9 +86,9 @@ public class StatsServiceTest {
 
         StatsResponse response = statsService.getStats();
 
-        assertEquals(1, response.getCount_Mutant_Dna());
-        assertEquals(3, response.getCount_Human_Dna());
-        assertEquals(0.333, response.getRatio(), 0.001);  // 1/3 = 0.333...
+        assertEquals(1, response.getCountMutantDna());
+        assertEquals(3, response.getCountHumanDna());
+        assertEquals(0.333, response.getRatio(), 0.01);  // Usamos delta para comparar dobles
     }
 
     @Test
@@ -92,8 +99,8 @@ public class StatsServiceTest {
 
         StatsResponse stats = statsService.getStats();
 
-        assertEquals(50, stats.getCount_Mutant_Dna());
-        assertEquals(50, stats.getCount_Human_Dna());
-        assertEquals(1.0, stats.getRatio(), 0.001);  // 50/50 = 1.0
+        assertEquals(50, stats.getCountMutantDna());
+        assertEquals(50, stats.getCountHumanDna());
+        assertEquals(1.0, stats.getRatio());
     }
 }

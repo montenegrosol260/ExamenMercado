@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RequiredArgsConstructor
 @RestController
 public class MutantController {
@@ -29,8 +31,23 @@ public class MutantController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<StatsResponse> getStats(){
-        return ResponseEntity.ok(statsService.getStats());
+    public ResponseEntity<StatsResponse> getStats(
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate
+    ) {
+
+        return ResponseEntity.ok(statsService.getStats(startDate, endDate));
+    }
+
+    @DeleteMapping("/mutant/{hash}")
+    public ResponseEntity<String> deleteMutant(@PathVariable String hash) {
+        boolean deleted = mutantService.deleteDna(hash);
+
+        if (deleted) {
+            return ResponseEntity.ok("Registro eliminado correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hash no encontrado");
+        }
     }
 
 }

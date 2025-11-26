@@ -1,7 +1,9 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class MutantDetector {
 
@@ -73,36 +75,57 @@ public class MutantDetector {
         return false;
     }
 
-    // METODOS HELPER
-    private boolean checkHorizontal(char[][] grid, int f, int c){
+    // METODOS HELPER OPTIMIZADOS
+
+    private boolean checkHorizontal(char[][] grid, int f, int c) {
         char start = grid[f][c];
-        for(int i = 1; i < SEQUENCE_LENGHT; i++){
-            if(grid[f][c + i] != start) return false;
+        // Comparamos directamente las 3 posiciones siguientes a la derecha
+        boolean match = grid[f][c + 1] == start &&
+                         grid[f][c + 2] == start &&
+                         grid[f][c + 3] == start;
+        if (match) {
+            // <--- 4. Usar el log
+            log.info("Secuencia HORIZONTAL detectada en Fila {} Columna {}", f, c);
         }
-        return true;
+        return match;
     }
 
-    private boolean checkVertical(char[][] grid, int f, int c){
+    private boolean checkVertical(char[][] grid, int f, int c) {
         char start = grid[f][c];
-        for(int i = 1; i < SEQUENCE_LENGHT; i++){
-            if(grid[f + i][c] != start) return false;
+        // Comparamos las 3 posiciones siguientes hacia abajo
+        boolean match = grid[f + 1][c] == start &&
+                        grid[f + 2][c] == start &&
+                        grid[f + 3][c] == start;
+        if (match) {
+            // <--- 4. Usar el log
+            log.info("Secuencia VERTICAL detectada en Fila {} Columna {}", f, c);
         }
-        return true;
+        return match;
     }
 
-    private boolean checkDiagonalAscending(char[][] grid, int f, int c){
+    private boolean checkDiagonalDescending(char[][] grid, int f, int c) {
         char start = grid[f][c];
-        for(int i = 1; i < SEQUENCE_LENGHT; i++){
-            if(grid[f - i][c + i] != start) return false;
+        // Comparamos hacia abajo y derecha (i+1, j+1)
+        boolean match = grid[f + 1][c + 1] == start &&
+                        grid[f + 2][c + 2] == start &&
+                        grid[f + 3][c + 3] == start;
+        if (match) {
+            // <--- 4. Usar el log
+            log.info("Secuencia DIAGONAL DESCENDENTE detectada en Fila {} Columna {}", f, c);
         }
-        return true;
+        return match;
     }
 
-    private boolean checkDiagonalDescending(char[][] grid, int f, int c){
+    private boolean checkDiagonalAscending(char[][] grid, int f, int c) {
         char start = grid[f][c];
-        for(int i = 1; i < SEQUENCE_LENGHT; i++){
-            if(grid[f + i][c + i] != start) return false;
+        // Comparamos hacia arriba y derecha (i-1, j+1)
+        boolean match = grid[f - 1][c + 1] == start &&
+                        grid[f - 2][c + 2] == start &&
+                        grid[f - 3][c + 3] == start;
+        if (match) {
+            // <--- 4. Usar el log
+            log.info("Secuencia DIAGONAL ASCENDENTE detectada en Fila {} Columna {}", f, c);
         }
-        return true;
+        return match;
     }
 }
